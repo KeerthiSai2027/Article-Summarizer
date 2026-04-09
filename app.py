@@ -8,7 +8,7 @@ nltk.download('punkt')
 nltk.download('punkt_tab')
 
 # Page config
-st.set_page_config(page_title="NewsAI Ultra", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="Article Summarizer", page_icon="📰", layout="wide")
 
 # CSS (Ultra UI)
 st.markdown("""
@@ -43,11 +43,10 @@ body {
 # Sidebar
 st.sidebar.title("⚙️ Settings")
 show_full_text = st.sidebar.checkbox("Show Full Article")
-show_keywords = st.sidebar.checkbox("Show Keywords")
 
 # Header
-st.markdown('<div class="big-title">🚀 NewsAI Ultra</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub">AI-powered News Intelligence Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="big-title">📰 Article Summarizer</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub">News Intelligence Dashboard</div>', unsafe_allow_html=True)
 
 # Input
 url = st.text_input("🔗 Paste Article URL")
