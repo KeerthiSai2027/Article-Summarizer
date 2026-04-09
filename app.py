@@ -3,118 +3,85 @@ from newspaper import Article
 from textblob import TextBlob
 import nltk
 
-# NLTK setup
+# Download NLTK data
 nltk.download('punkt')
 nltk.download('punkt_tab')
 
 # Page config
-st.set_page_config(page_title="NewsAI Ultra", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="News AI", page_icon="📰", layout="centered")
 
-# CSS (Ultra UI)
+# Custom CSS
 st.markdown("""
 <style>
 body {
-    background: linear-gradient(135deg, #0f172a, #020617);
+    background-color: #0e1117;
 }
 .main {
+    background-color: #0e1117;
     color: white;
 }
-.glass {
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
-    padding: 25px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+.card {
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #161b22;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
     margin-bottom: 20px;
 }
-.big-title {
+.title {
     text-align: center;
-    font-size: 52px;
-    font-weight: 800;
+    font-size: 40px;
+    font-weight: bold;
 }
-.sub {
+.subtitle {
     text-align: center;
-    color: #94a3b8;
+    color: #9ca3af;
     margin-bottom: 30px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar
-st.sidebar.title("⚙️ Settings")
-show_full_text = st.sidebar.checkbox("Show Full Article")
-show_keywords = st.sidebar.checkbox("Show Keywords")
-
 # Header
-st.markdown('<div class="big-title">🚀 NewsAI Ultra</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub">AI-powered News Intelligence Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">📰 News AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Summarize any article in seconds</div>', unsafe_allow_html=True)
 
 # Input
-url = st.text_input("🔗 Paste Article URL")
+url = st.text_input("🔗 Paste your news article URL")
 
-if st.button("⚡ Analyze"):
+# Button
+if st.button("✨ Summarize"):
 
-    if not url:
-        st.warning("Enter a valid URL")
+    if url == "":
+        st.warning("Please enter a URL")
     else:
-        with st.spinner("Processing..."):
+        with st.spinner("Analyzing article... ⏳"):
 
             article = Article(url)
             article.download()
             article.parse()
             article.nlp()
 
+            # Sentiment
             analysis = TextBlob(article.text)
             polarity = analysis.sentiment.polarity
 
-        # Layout
-        col1, col2, col3 = st.columns([2,1,1])
+        # Title
+        st.markdown(f'<div class="card"><h3>🧠 Title</h3>{article.title}</div>', unsafe_allow_html=True)
 
-        # Title + Summary
-        with col1:
-            st.markdown(f'<div class="glass"><h2>🧠 {article.title}</h2></div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="glass"><h3>📄 Summary</h3>{article.summary}</div>', unsafe_allow_html=True)
+        # Authors
+        st.markdown(f'<div class="card"><h3>✍️ Authors</h3>{article.authors}</div>', unsafe_allow_html=True)
 
-        # Meta Info
-        with col2:
-            st.markdown(f'<div class="glass"><b>✍️ Authors:</b><br>{article.authors}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="glass"><b>📅 Date:</b><br>{article.publish_date}</div>', unsafe_allow_html=True)
+        # Date
+        st.markdown(f'<div class="card"><h3>📅 Publish Date</h3>{article.publish_date}</div>', unsafe_allow_html=True)
+
+        # Summary
+        st.markdown(f'<div class="card"><h3>📄 Summary</h3>{article.summary}</div>', unsafe_allow_html=True)
 
         # Sentiment
-        with col3:
-            st.markdown('<div class="glass"><h3>📊 Sentiment</h3></div>', unsafe_allow_html=True)
+        if polarity > 0:
+            sentiment = "😊 Positive"
+        elif polarity < 0:
+            sentiment = "😡 Negative"
+        else:
+            sentiment = "😐 Neutral"
 
-            score = (polarity + 1) / 2  # normalize 0–1
-            st.progress(score)
-
-            if polarity > 0:
-                st.success(f"😊 Positive ({polarity:.2f})")
-            elif polarity < 0:
-                st.error(f"😡 Negative ({polarity:.2f})")
-            else:
-                st.info("😐 Neutral")
-
-        # Keywords
-        if show_keywords:
-            st.markdown('<div class="glass"><h3>🧠 Keywords</h3></div>', unsafe_allow_html=True)
-            st.write(article.keywords)
-
-        # Full Text
-        if show_full_text:
-            with st.expander("📜 Full Article"):
-                st.write(article.text)
-
-        # Actions
-        st.markdown('<div class="glass"><h3>⚡ Actions</h3></div>', unsafe_allow_html=True)
-
-        colA, colB = st.columns(2)
-
-        with colA:
-            st.download_button(
-                "📥 Download Summary",
-                article.summary,
-                file_name="summary.txt"
-            )
-
-        with colB:
-            st.code(article.summary, language="text")
+        st.markdown(f'<div class="card"><h3>📊 Sentiment</h3>{sentiment}</div>', unsafe_allow_html=True)
