@@ -1,6 +1,10 @@
 import streamlit as st
 from newspaper import Article
 from textblob import TextBlob
+import nltk
+
+nltk.download('punkt')
+nltk.download('punkt_tab')
 
 st.title("📰 News Summarizer + Sentiment Analyzer")
 
