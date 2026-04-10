@@ -87,14 +87,3 @@ Steps:
 3. Deploy `app.py`
 
 ---
-
-## 📁 Project Structure
-
-```
-Article-Summarizer/
-│── app.py
-│── requirements.txt
-│── README.md
-```
-
----
